@@ -3,13 +3,17 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
+import Image from "next/image";
 
 interface LinkItem {
   id: string;
   title: string;
+  slug: string;
   domain: string;
+  url: string;
   click_count: number;
   visibility: "public" | "private";
+  favicon_url?: string;
 }
 
 export default function Dashboard() {
@@ -85,14 +89,61 @@ export default function Dashboard() {
         {/* Link List */}
         <div className="space-y-4">
           {links.map(link => (
-            <div key={link.id} className="bg-white p-4 rounded-lg shadow">
-              <h3 className="font-semibold">{link.title}</h3>
-              <p className="text-sm text-gray-500">{link.domain}</p>
-              <p className="text-xs text-gray-400">
-                Clicks: {link.click_count || 0}
-              </p>
-            </div>
-          ))}
+  <div key={link.id} className="bg-white p-5 rounded-xl shadow hover:shadow-md transition">
+
+    {/* Top Section */}
+    <div className="flex items-center justify-between mb-3">
+
+      {/* Title + Favicon */}
+      <div className="flex items-center gap-3">
+        {link.favicon_url && (
+          <Image
+            src={link.favicon_url}
+            alt="favicon"
+            width={24}
+            height={24}
+          />
+        )}
+        <h3 className="font-semibold text-lg">{link.title}</h3>
+      </div>
+
+      {/* Visibility Badge */}
+      <span
+        className={`text-xs px-3 py-1 rounded-full ${
+          link.visibility === "public"
+            ? "bg-green-100 text-green-700"
+            : "bg-gray-200 text-gray-700"
+        }`}
+      >
+        {link.visibility.toUpperCase()}
+      </span>
+    </div>
+
+    {/* URL */}
+    <div className="flex items-center justify-between">
+      <a
+        href={link.url}
+        target="_blank"
+        className="text-indigo-600 text-sm break-all"
+      >
+        {link.url}
+      </a>
+
+      {/* Copy Button */}
+      <button
+        onClick={() => navigator.clipboard.writeText(link.url)}
+        className="ml-3 text-xs bg-indigo-100 px-2 py-1 rounded hover:bg-indigo-200 transition"
+      >
+        Copy
+      </button>
+    </div>
+
+    {/* Click Count */}
+    <p className="text-xs text-gray-400 mt-3">
+      Clicks: {link.click_count || 0}
+    </p>
+  </div>
+))}
         </div>
 
       </div>
