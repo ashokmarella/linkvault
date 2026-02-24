@@ -1,36 +1,141 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🔗 LinkVault
 
-## Getting Started
+A secure full-stack link sharing platform built using **Next.js (App Router)** and **Supabase**.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Live Features
+
+### Authentication
+- Email Signup & Login
+- Session handling via Supabase
+- Row-Level Security (RLS) enforced
+
+### Link Management
+- Create Public/Private Links
+- Unique Slug-based routing (`/l/[slug]`)
+- Secure user isolation
+
+### Public Link Pages
+- Public links accessible without login
+- Private links return 404
+- Dynamic routing using Next.js
+
+### Click Tracking
+- `click_count` increment on each visit
+- Click history stored in `link_clicks` table
+
+###  Metadata Fetching (Server-side)
+- Page Title extraction
+- Domain extraction
+- Favicon extraction
+- Implemented using Cheerio in API route
+
+###  Analytics Dashboard
+- Total Links
+- Public vs Private breakdown
+- Total Clicks
+- Most clicked link
+
+---
+
+## Architecture
+
+### Frontend
+- Next.js 15 (App Router)
+- Tailwind CSS
+- Client + Server Components
+
+### Backend
+- Supabase (PostgreSQL)
+- Row-Level Security (RLS)
+- API Routes for metadata fetching
+
+---
+
+##  Security Design
+
+- RLS ensures users access only their own links
+- Public SELECT policy for public links
+- Private links hidden via database-level enforcement
+- Public UPDATE policy used only for click tracking
+
+---
+
+##  Database Schema
+
+### `links`
+- id (UUID)
+- user_id (FK → auth.users)
+- title
+- description
+- url
+- slug
+- visibility (public/private)
+- click_count
+- metadata_title
+- domain
+- favicon_url
+
+### `link_clicks`
+- id
+- link_id (FK)
+- clicked_at
+
+---
+
+##  Setup Instructions
+
+1. Clone repository
+
+2. Install dependencies:
+
+```
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Add environment variables:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Run development server:
 
-## Learn More
+```
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Trade-offs
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Click tracking simplified using direct counter increment
+- Basic metadata parsing (title + favicon only)
+- Analytics implemented without chart library for simplicity
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+##  Future Improvements
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Slug customization
+- Advanced analytics charts
+- Tag-based filtering
+- Rate limiting for public updates
+- Edit/Delete link UI
+- Deployment to Vercel
+
+---
+
+##  Project Summary
+
+This project demonstrates:
+
+- Secure full-stack architecture
+- Proper RLS implementation
+- Server-side data processing
+- Dynamic routing
+- Real-time analytics logic
+
+Built as an assessment submission.
